@@ -145,9 +145,21 @@ export function calculateTacticalDivergence(input: TacticalDivergenceInput): Tac
 }
 
 /**
+ * Formats a level-playing-field prompt for Google Search AI, guaranteeing
+ * identical game context: Monster Hunter Portable 3rd (English Patch).
+ */
+export function formatBaselineSearchPrompt(query: string): string {
+  return `You are a standard Google Web Search AI assistant.
+Context: In Monster Hunter Portable 3rd (MHP3rd / English Patch for PSP).
+Question: "${query}"
+
+Please answer the player's question directly for Monster Hunter Portable 3rd.`;
+}
+
+/**
  * Runs a live comparison query generating both:
- * 1. MHP3rd Deterministic Tactical Advisor response
- * 2. Simulated Generic Web/Search AI response (unconstrained generic LLM without MHP3rd database)
+ * 1. MHP3rd Deterministic Tactical Advisor response (with local database & hitzone engine)
+ * 2. Level-playing-field Google Search AI response (given the exact same "In Monster Hunter Portable 3rd" context, but without deterministic database)
  */
 export async function generateBenchmarkComparison(
   query: string, 
@@ -164,13 +176,12 @@ export async function generateBenchmarkComparison(
 
   const ai = new GoogleGenAI({ apiKey: keyToUse });
 
-  // 1. Generate generic search response (no MHP3rd database grounding)
-  const genericPrompt = `You are a standard Google Web Search AI assistant. Answer this player query directly and generally:
-Question: "${query}"`;
+  // 1. Generate level-playing-field search response with explicit MHP3rd context
+  const searchPrompt = formatBaselineSearchPrompt(query);
 
   const genericCall = await ai.models.generateContent({
     model: 'gemini-3.8-flash',
-    contents: genericPrompt
+    contents: searchPrompt
   });
   const genericResponse = genericCall.text || 'No response';
 

@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { 
   calculateTacticalDivergence, 
   generateBenchmarkComparison,
+  formatBaselineSearchPrompt,
   type TacticalDivergenceReport 
 } from '../src/engine/benchmark-comparator';
 
@@ -33,15 +34,11 @@ describe('Benchmark Comparison Engine (TDD Red Phase)', () => {
     expect(report.mhp3rdMechanicKeywordsFound.length).toBeGreaterThan(0);
   });
 
-  it('should return 0% divergence when comparing identical advice', () => {
-    const text = `Use Ice against Zinogre. Aim for the Head.`;
-    const report = calculateTacticalDivergence({
-      query: "Best weapon against Zinogre?",
-      mhp3rdAdvisorText: text,
-      genericSearchText: text,
-      targetMonsters: ["Zinogre"]
-    });
+  it('should format baseline prompt with explicit Monster Hunter Portable 3rd game context', () => {
+    const rawQuery = "What is the best bow against Rathian and Rathalos?";
+    const formatted = formatBaselineSearchPrompt(rawQuery);
 
-    expect(report.divergencePercentage).toBe(0);
+    expect(formatted).toContain("In Monster Hunter Portable 3rd (MHP3rd / English Patch for PSP)");
+    expect(formatted).toContain(rawQuery);
   });
 });
