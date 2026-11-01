@@ -1,0 +1,57 @@
+[
+  {
+    "id": "misty-peaks",
+    "name": "Misty Peaks",
+    "aliases": ["Mountain Stream", "Keikoku"],
+    "needsHotDrink": false,
+    "needsCoolDrink": false,
+    "hasWaterAreas": true,
+    "description": "Temperate mountain riverlands surrounding Yukumo Village. Mild weather with no drink requirements."
+  },
+  {
+    "id": "sandy-plains",
+    "name": "Sandy Plains",
+    "aliases": ["Desert"],
+    "needsHotDrink": false,
+    "needsCoolDrink": true,
+    "note": "Requires Cool Drink in Day, Hot Drink at Night",
+    "hasWaterAreas": false,
+    "description": "Scorching arid dunes during daylight; freezing desert temperatures at night."
+  },
+  {
+    "id": "flooded-forest",
+    "name": "Flooded Forest",
+    "aliases": ["Suibotsu"],
+    "needsHotDrink": false,
+    "needsCoolDrink": false,
+    "hasWaterAreas": true,
+    "description": "Lush jungle wetlands. No extreme temperature drinks needed."
+  },
+  {
+    "id": "tundra",
+    "name": "Tundra",
+    "aliases": ["Kyokuchi"],
+    "needsHotDrink": true,
+    "needsCoolDrink": false,
+    "hasWaterAreas": true,
+    "description": "Freezing sub-zero glacial terrain. Hot Drinks are mandatory to stop stamina degradation."
+  },
+  {
+    "id": "volcano",
+    "name": "Volcano",
+    "aliases": ["Kazan"],
+    "needsHotDrink": false,
+    "needsCoolDrink": true,
+    "hasWaterAreas": false,
+    "description": "Lava flows and extreme heat. Cool Drinks are mandatory to prevent continual health loss."
+  },
+  {
+    "id": "sacred-mountain",
+    "name": "Sacred Mountain",
+    "aliases": ["Reihou"],
+    "needsHotDrink": false,
+    "needsCoolDrink": false,
+    "hasWaterAreas": false,
+    "description": "The stormy peak where the divine tempest Amatsu descends. No drink required."
+  }
+]
