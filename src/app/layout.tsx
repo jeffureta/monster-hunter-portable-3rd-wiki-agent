@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import AuthProvider from '@/components/AuthProvider';
 
 export const metadata: Metadata = {
   title: 'MHP3rd Tactical Advisor & Wiki Agent',
@@ -14,7 +15,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark h-full">
       <body className="bg-[#0c0e12] text-gray-100 h-full overflow-hidden flex flex-col selection:bg-amber-500/30">
-        {children}
+        <AuthProvider>{children}</AuthProvider>
       </body>
     </html>
   );
