@@ -2,7 +2,7 @@
   {
     "id": "zinogre",
     "name": "Zinogre",
-    "aliases": ["Jinouga"],
+    "aliases": ["Jinouga", "Thunder Wolf Wyvern"],
     "species": "Fanged Wyvern",
     "elements": {
       "Fire": 5,
@@ -20,21 +20,22 @@
       "shot": 60
     },
     "status": {
-      "poison": "Low",
-      "paralysis": "Medium",
-      "sleep": "Medium",
+      "poison": "High (Takes 240 dmg)",
+      "paralysis": "Moderate",
+      "sleep": "Moderate",
       "stun": "High"
     },
     "hazards": {
       "roar": "Small",
-      "wind": "None",
+      "wind": "Small",
       "tremor": "None"
-    }
+    },
+    "specialNotes": "Shock traps power up Zinogre when charged! Pitfall traps work best when charged."
   },
   {
     "id": "tigrex",
     "name": "Tigrex",
-    "aliases": ["Tiga"],
+    "aliases": ["Tiga", "Roaring Wyvern"],
     "species": "Flying Wyvern",
     "elements": {
       "Fire": 0,
@@ -47,58 +48,126 @@
     "immuneElements": ["Fire"],
     "bestPhysicalWeakness": {
       "part": "Head",
-      "cut": 65,
+      "cut": 70,
       "impact": 65,
-      "shot": 50
+      "shot": 55
     },
     "status": {
-      "poison": "Medium",
-      "paralysis": "Medium",
-      "sleep": "Medium",
-      "stun": "Medium"
+      "poison": "Moderate",
+      "paralysis": "Moderate",
+      "sleep": "Moderate",
+      "stun": "Moderate"
     },
     "hazards": {
-      "roar": "Large (Damage)",
+      "roar": "Large (Damage Shockwave)",
       "wind": "Large",
       "tremor": "None"
-    }
+    },
+    "specialNotes": "Roar inflicts physical damage at point-blank range. HG Earplugs recommended."
+  },
+  {
+    "id": "brute-tigrex",
+    "name": "Brute Tigrex",
+    "aliases": ["Kuro-Tigrex", "Black Tigrex"],
+    "species": "Flying Wyvern",
+    "elements": {
+      "Fire": 0,
+      "Water": 25,
+      "Thunder": 15,
+      "Ice": 5,
+      "Dragon": 15
+    },
+    "weakestElement": "Water",
+    "immuneElements": ["Fire"],
+    "bestPhysicalWeakness": {
+      "part": "Head",
+      "cut": 70,
+      "impact": 65,
+      "shot": 55
+    },
+    "status": {
+      "poison": "Moderate",
+      "paralysis": "Moderate",
+      "sleep": "Moderate",
+      "stun": "Moderate"
+    },
+    "hazards": {
+      "roar": "Great Roar (Massive Damage Blast)",
+      "wind": "Large",
+      "tremor": "None"
+    },
+    "specialNotes": "Fires deadly sonic blasts with Great Roar. Water weapons excel here."
   },
   {
     "id": "nargacuga",
     "name": "Nargacuga",
-    "aliases": ["Narga"],
+    "aliases": ["Narga", "Swift Wyvern"],
     "species": "Flying Wyvern",
     "elements": {
       "Fire": 20,
-      "Water": 5,
+      "Water": 0,
       "Thunder": 25,
       "Ice": 5,
-      "Dragon": 5
+      "Dragon": 0
     },
     "weakestElement": "Thunder",
-    "immuneElements": [],
+    "immuneElements": ["Water", "Dragon"],
     "bestPhysicalWeakness": {
       "part": "Head",
       "cut": 60,
-      "impact": 55,
-      "shot": 45
+      "impact": 60,
+      "shot": 65
     },
     "status": {
-      "poison": "Medium",
-      "paralysis": "Medium",
-      "sleep": "Medium",
-      "stun": "Medium"
+      "poison": "Moderate",
+      "paralysis": "Moderate",
+      "sleep": "Moderate",
+      "stun": "Moderate"
     },
     "hazards": {
       "roar": "Small",
       "wind": "Small",
       "tremor": "None"
-    }
+    },
+    "specialNotes": "Pitfall traps ONLY work when enraged! Normal/fatigued Nargacuga evades pitfalls."
+  },
+  {
+    "id": "green-nargacuga",
+    "name": "Green Nargacuga",
+    "aliases": ["Midori Narga"],
+    "species": "Flying Wyvern",
+    "elements": {
+      "Fire": 20,
+      "Water": 0,
+      "Thunder": 25,
+      "Ice": 5,
+      "Dragon": 0
+    },
+    "weakestElement": "Thunder",
+    "immuneElements": ["Water", "Dragon"],
+    "bestPhysicalWeakness": {
+      "part": "Head",
+      "cut": 60,
+      "impact": 60,
+      "shot": 65
+    },
+    "status": {
+      "poison": "Moderate",
+      "paralysis": "Moderate",
+      "sleep": "Moderate",
+      "stun": "Moderate"
+    },
+    "hazards": {
+      "roar": "Small",
+      "wind": "Small",
+      "tremor": "None"
+    },
+    "specialNotes": "Double tail slam. Pitfall traps work only when enraged."
   },
   {
     "id": "barioth",
     "name": "Barioth",
-    "aliases": ["Berio"],
+    "aliases": ["Beriorosu", "Tusk Wyvern"],
     "species": "Flying Wyvern",
     "elements": {
       "Fire": 30,
@@ -112,147 +181,482 @@
     "bestPhysicalWeakness": {
       "part": "Head",
       "cut": 60,
-      "impact": 60,
-      "shot": 50
+      "impact": 65,
+      "shot": 70
     },
     "status": {
-      "poison": "Medium",
-      "paralysis": "Medium",
-      "sleep": "Medium",
-      "stun": "Medium"
+      "poison": "Moderate",
+      "paralysis": "Moderate",
+      "sleep": "Moderate",
+      "stun": "Moderate"
+    },
+    "hazards": {
+      "roar": "Small",
+      "wind": "Small",
+      "tremor": "None"
+    },
+    "specialNotes": "Break wing spikes first to cause Barioth to slip and stumble on jumps."
+  },
+  {
+    "id": "sand-barioth",
+    "name": "Sand Barioth",
+    "aliases": ["Wind Barioth", "Fuga"],
+    "species": "Flying Wyvern",
+    "elements": {
+      "Fire": 0,
+      "Water": 15,
+      "Thunder": 25,
+      "Ice": 30,
+      "Dragon": 10
+    },
+    "weakestElement": "Ice",
+    "immuneElements": ["Fire"],
+    "bestPhysicalWeakness": {
+      "part": "Head",
+      "cut": 60,
+      "impact": 65,
+      "shot": 70
+    },
+    "status": {
+      "poison": "Moderate",
+      "paralysis": "Moderate",
+      "sleep": "Moderate",
+      "stun": "Moderate"
+    },
+    "hazards": {
+      "roar": "Small",
+      "wind": "Creates Tornadoes",
+      "tremor": "None"
+    },
+    "specialNotes": "Creates active sand whirlwinds. Break wing claws to reduce mobility."
+  },
+  {
+    "id": "rathalos",
+    "name": "Rathalos",
+    "aliases": ["Liolaeus", "King of the Skies"],
+    "species": "Flying Wyvern",
+    "elements": {
+      "Fire": 0,
+      "Water": 10,
+      "Thunder": 20,
+      "Ice": 10,
+      "Dragon": 35
+    },
+    "weakestElement": "Dragon",
+    "immuneElements": ["Fire"],
+    "bestPhysicalWeakness": {
+      "part": "Head",
+      "cut": 80,
+      "impact": 80,
+      "shot": 70
+    },
+    "status": {
+      "poison": "Resistant",
+      "paralysis": "High",
+      "sleep": "High",
+      "stun": "High"
     },
     "hazards": {
       "roar": "Small",
       "wind": "Large",
       "tremor": "None"
-    }
+    },
+    "specialNotes": "Flash bombs instantly ground him from air. Head takes massive 80 raw damage."
+  },
+  {
+    "id": "silver-rathalos",
+    "name": "Silver Rathalos",
+    "aliases": ["Silver Sol", "Ginjirou"],
+    "species": "Flying Wyvern",
+    "elements": {
+      "Fire": 0,
+      "Water": 20,
+      "Thunder": 30,
+      "Ice": 5,
+      "Dragon": 0
+    },
+    "weakestElement": "Thunder",
+    "immuneElements": ["Fire", "Dragon"],
+    "bestPhysicalWeakness": {
+      "part": "Back / Wings",
+      "cut": 55,
+      "impact": 50,
+      "shot": 45
+    },
+    "status": {
+      "poison": "Resistant",
+      "paralysis": "Moderate",
+      "sleep": "Moderate",
+      "stun": "Moderate"
+    },
+    "hazards": {
+      "roar": "Large (HG Earplugs)",
+      "wind": "Large",
+      "tremor": "None"
+    },
+    "specialNotes": "Head has rock-hard armor (12-19 hitzone, bounces white sharpness). Focus on wings/back with Thunder."
+  },
+  {
+    "id": "rathian",
+    "name": "Rathian",
+    "aliases": ["Liolaia", "Queen of the Land"],
+    "species": "Flying Wyvern",
+    "elements": {
+      "Fire": 0,
+      "Water": 10,
+      "Thunder": 20,
+      "Ice": 10,
+      "Dragon": 35
+    },
+    "weakestElement": "Dragon",
+    "immuneElements": ["Fire"],
+    "bestPhysicalWeakness": {
+      "part": "Head",
+      "cut": 80,
+      "impact": 80,
+      "shot": 70
+    },
+    "status": {
+      "poison": "Resistant",
+      "paralysis": "High",
+      "sleep": "High",
+      "stun": "High"
+    },
+    "hazards": {
+      "roar": "Small",
+      "wind": "Small",
+      "tremor": "None"
+    },
+    "specialNotes": "Sever the tail to shorten somersault poison range. Huge 80 raw head weakness."
+  },
+  {
+    "id": "gold-rathian",
+    "name": "Gold Rathian",
+    "aliases": ["Gold Lunar", "Kinrei"],
+    "species": "Flying Wyvern",
+    "elements": {
+      "Fire": 0,
+      "Water": 20,
+      "Thunder": 30,
+      "Ice": 5,
+      "Dragon": 0
+    },
+    "weakestElement": "Thunder",
+    "immuneElements": ["Fire", "Dragon"],
+    "bestPhysicalWeakness": {
+      "part": "Back / Wings",
+      "cut": 55,
+      "impact": 50,
+      "shot": 45
+    },
+    "status": {
+      "poison": "Resistant",
+      "paralysis": "Moderate",
+      "sleep": "Moderate",
+      "stun": "Moderate"
+    },
+    "hazards": {
+      "roar": "Large (HG Earplugs)",
+      "wind": "Large",
+      "tremor": "None"
+    },
+    "specialNotes": "Head is armored. Attack wings, back, and legs with Thunder/Water."
+  },
+  {
+    "id": "duramboros",
+    "name": "Duramboros",
+    "aliases": ["Doboruberuku", "Tail Hammer Wyvern"],
+    "species": "Brute Wyvern",
+    "elements": {
+      "Fire": 30,
+      "Water": 5,
+      "Thunder": 15,
+      "Ice": 20,
+      "Dragon": 10
+    },
+    "weakestElement": "Fire",
+    "immuneElements": [],
+    "bestPhysicalWeakness": {
+      "part": "Hump / Moss Mound",
+      "cut": 96,
+      "impact": 96,
+      "shot": 60
+    },
+    "status": {
+      "poison": "Extreme (Takes 410 dmg)",
+      "paralysis": "Moderate",
+      "sleep": "High (60s duration)",
+      "stun": "Low"
+    },
+    "hazards": {
+      "roar": "Large (HG Earplugs)",
+      "wind": "None",
+      "tremor": "Large"
+    },
+    "specialNotes": "Knock him over during spin to mine back and unleash attacks on the massive 96 broken hump hitzone!"
+  },
+  {
+    "id": "deviljho",
+    "name": "Deviljho",
+    "aliases": ["Evil Jaw", "Jho"],
+    "species": "Brute Wyvern",
+    "elements": {
+      "Fire": 10,
+      "Water": 10,
+      "Thunder": 25,
+      "Ice": 0,
+      "Dragon": 25
+    },
+    "weakestElement": "Thunder",
+    "immuneElements": ["Ice"],
+    "bestPhysicalWeakness": {
+      "part": "Belly (Enraged) / Head (Normal)",
+      "cut": 80,
+      "impact": 80,
+      "shot": 75
+    },
+    "status": {
+      "poison": "Extreme (Takes 500 dmg)",
+      "paralysis": "High",
+      "sleep": "High",
+      "stun": "High"
+    },
+    "hazards": {
+      "roar": "Large (HG Earplugs)",
+      "wind": "None",
+      "tremor": "Large"
+    },
+    "specialNotes": "Will eat Tinged/Drugged/Poisoned meat mid-fight when fatigued! Enraged belly takes enormous 80 raw."
+  },
+  {
+    "id": "nibelsnarf",
+    "name": "Nibelsnarf",
+    "aliases": ["Hapurubokka", "Sand Swallower"],
+    "species": "Leviathan",
+    "elements": {
+      "Fire": 0,
+      "Water": 10,
+      "Thunder": 20,
+      "Ice": 25,
+      "Dragon": 0
+    },
+    "weakestElement": "Ice",
+    "immuneElements": ["Fire", "Dragon"],
+    "bestPhysicalWeakness": {
+      "part": "Uvula / Mouth",
+      "cut": 70,
+      "impact": 70,
+      "shot": 65
+    },
+    "status": {
+      "poison": "Moderate",
+      "paralysis": "Moderate",
+      "sleep": "Moderate",
+      "stun": "Moderate"
+    },
+    "hazards": {
+      "roar": "Large",
+      "wind": "Sand blast",
+      "tremor": "None"
+    },
+    "specialNotes": "Feed him Barrel Bombs! When stunned in sand, approach sheathed to fish him up with a fishing rod!"
   },
   {
     "id": "agnaktor",
     "name": "Agnaktor",
-    "aliases": ["Agna"],
+    "aliases": ["Agna", "Fire Pike Wyvern"],
     "species": "Leviathan",
     "elements": {
       "Fire": 0,
       "Water": 35,
-      "Thunder": 15,
+      "Thunder": 10,
       "Ice": 20,
       "Dragon": 5
     },
     "weakestElement": "Water",
     "immuneElements": ["Fire"],
     "bestPhysicalWeakness": {
-      "part": "Head (Softened)",
+      "part": "Chest (Molten)",
       "cut": 60,
-      "impact": 55,
-      "shot": 45
+      "impact": 60,
+      "shot": 50
     },
     "status": {
       "poison": "Low",
-      "paralysis": "Medium",
-      "sleep": "Medium",
-      "stun": "Medium"
+      "paralysis": "Moderate",
+      "sleep": "Moderate",
+      "stun": "Moderate"
     },
     "hazards": {
       "roar": "Small",
       "wind": "Small",
       "tremor": "None"
-    }
+    },
+    "specialNotes": "Hard lava armor softens when submerged in magma or hit by explosive shells/bombs."
   },
   {
-    "id": "duramboros",
-    "name": "Duramboros",
-    "aliases": ["Doboruberuku"],
-    "species": "Brute Wyvern",
-    "elements": {
-      "Fire": 30,
-      "Water": 5,
-      "Thunder": 15,
-      "Ice": 10,
-      "Dragon": 5
-    },
-    "weakestElement": "Fire",
-    "immuneElements": [],
-    "bestPhysicalWeakness": {
-      "part": "Hump / Horns",
-      "cut": 55,
-      "impact": 55,
-      "shot": 45
-    },
-    "status": {
-      "poison": "Very High",
-      "paralysis": "Medium",
-      "sleep": "Medium",
-      "stun": "Low"
-    },
-    "hazards": {
-      "roar": "Large",
-      "wind": "Small",
-      "tremor": "Large"
-    }
-  },
-  {
-    "id": "nibelsnarf",
-    "name": "Nibelsnarf",
-    "aliases": ["Hapurubokka"],
+    "id": "glacial-agnaktor",
+    "name": "Glacial Agnaktor",
+    "aliases": ["Ice Agnaktor"],
     "species": "Leviathan",
     "elements": {
-      "Fire": 0,
-      "Water": 15,
-      "Thunder": 25,
-      "Ice": 30,
-      "Dragon": 5
+      "Fire": 35,
+      "Water": 0,
+      "Thunder": 10,
+      "Ice": 0,
+      "Dragon": 20
     },
-    "weakestElement": "Ice",
-    "immuneElements": ["Fire"],
+    "weakestElement": "Fire",
+    "immuneElements": ["Water", "Ice"],
     "bestPhysicalWeakness": {
-      "part": "Uvula / Gills",
-      "cut": 70,
-      "impact": 70,
-      "shot": 60
+      "part": "Chest (Melted)",
+      "cut": 60,
+      "impact": 60,
+      "shot": 50
     },
     "status": {
-      "poison": "Medium",
-      "paralysis": "Medium",
-      "sleep": "Medium",
-      "stun": "Medium"
+      "poison": "Low",
+      "paralysis": "Moderate",
+      "sleep": "Moderate",
+      "stun": "Moderate"
     },
     "hazards": {
-      "roar": "Large",
-      "wind": "Large",
+      "roar": "Small",
+      "wind": "Small",
       "tremor": "None"
-    }
+    },
+    "specialNotes": "Starts encased in ice armor that softens out of water/ice. Fire weapons melt the ice shell quickly."
   },
   {
     "id": "amatsu",
     "name": "Amatsu",
-    "aliases": ["Amatsumagatsuchi"],
+    "aliases": ["Amatsumagatsuchi", "Heavenly Disaster"],
     "species": "Elder Dragon",
     "elements": {
-      "Fire": 25,
+      "Fire": 20,
       "Water": 0,
-      "Thunder": 5,
-      "Ice": 5,
-      "Dragon": 30
+      "Thunder": 0,
+      "Ice": 0,
+      "Dragon": 25
     },
     "weakestElement": "Dragon",
-    "immuneElements": ["Water"],
+    "immuneElements": ["Water", "Thunder", "Ice"],
     "bestPhysicalWeakness": {
       "part": "Head",
-      "cut": 65,
-      "impact": 65,
-      "shot": 50
+      "cut": 70,
+      "impact": 80,
+      "shot": 75
     },
     "status": {
-      "poison": "None",
-      "paralysis": "None",
-      "sleep": "None",
-      "stun": "Low"
+      "poison": "High",
+      "paralysis": "Immune",
+      "sleep": "Immune",
+      "stun": "Moderate"
+    },
+    "hazards": {
+      "roar": "Large (HG Earplugs)",
+      "wind": "Dragon / Storm Barrier",
+      "tremor": "None"
+    },
+    "specialNotes": "Immune to all traps. Dragon wind repels shots unless hitting head/tail. Use One-shot Binders from supply box."
+  },
+  {
+    "id": "alatreon",
+    "name": "Alatreon",
+    "aliases": ["Albatrion", "Blazing Black Dragon"],
+    "species": "Elder Dragon",
+    "elements": {
+      "Fire": 0,
+      "Water": 15,
+      "Thunder": 5,
+      "Ice": 30,
+      "Dragon": 15
+    },
+    "weakestElement": "Ice",
+    "immuneElements": [],
+    "bestPhysicalWeakness": {
+      "part": "Head",
+      "cut": 60,
+      "impact": 65,
+      "shot": 45
+    },
+    "status": {
+      "poison": "Moderate",
+      "paralysis": "Moderate",
+      "sleep": "Moderate",
+      "stun": "Moderate"
+    },
+    "hazards": {
+      "roar": "Large (HG Earplugs)",
+      "wind": "Large",
+      "tremor": "None"
+    },
+    "specialNotes": "Ground mode is weak to Ice; Flight mode is weak to Fire. All traps fail against Elder Dragons."
+  },
+  {
+    "id": "akantor",
+    "name": "Akantor",
+    "aliases": ["Akamu", "Supreme Black God"],
+    "species": "Flying Wyvern",
+    "elements": {
+      "Fire": 0,
+      "Water": 10,
+      "Thunder": 25,
+      "Ice": 0,
+      "Dragon": 15
+    },
+    "weakestElement": "Thunder",
+    "immuneElements": ["Fire", "Ice"],
+    "bestPhysicalWeakness": {
+      "part": "Head (Broken)",
+      "cut": 70,
+      "impact": 70,
+      "shot": 45
+    },
+    "status": {
+      "poison": "Moderate",
+      "paralysis": "Moderate",
+      "sleep": "Moderate",
+      "stun": "Moderate"
+    },
+    "hazards": {
+      "roar": "Large (Physical Damage)",
+      "wind": "Large",
+      "tremor": "Large (Tremor Res)"
+    },
+    "specialNotes": "Immune to traps. Flash bombs work. Sonic bomb cancels wind tunnel if not enraged."
+  },
+  {
+    "id": "ukanlos",
+    "name": "Ukanlos",
+    "aliases": ["Ukamu", "Supreme White God"],
+    "species": "Flying Wyvern",
+    "elements": {
+      "Fire": 30,
+      "Water": 5,
+      "Thunder": 15,
+      "Ice": 0,
+      "Dragon": 15
+    },
+    "weakestElement": "Fire",
+    "immuneElements": ["Ice"],
+    "bestPhysicalWeakness": {
+      "part": "Head / Chest",
+      "cut": 60,
+      "impact": 65,
+      "shot": 40
+    },
+    "status": {
+      "poison": "Moderate",
+      "paralysis": "Moderate",
+      "sleep": "Moderate",
+      "stun": "Moderate"
     },
     "hazards": {
       "roar": "Large",
-      "wind": "Dragon Wind",
-      "tremor": "None"
-    }
+      "wind": "Large",
+      "tremor": "Large (Tremor Res)"
+    },
+    "specialNotes": "Ice beam swim attack. Sonic bomb cancels ice beam windup if un-enraged."
   }
 ]
