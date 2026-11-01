@@ -14,8 +14,15 @@ import {
   ThumbsDown, 
   Settings2,
   Swords,
-  Check
+  Check,
+  ExternalLink,
+  Globe
 } from 'lucide-react';
+
+interface GroundingSource {
+  title?: string;
+  url?: string;
+}
 
 interface TacticalSolution {
   monsters: Array<{
@@ -62,7 +69,9 @@ interface HunterResponse {
   query: string;
   solverOutput: TacticalSolution;
   tacticalAdvice: string;
+  sources?: GroundingSource[];
   isCached?: boolean;
+  isOfflineFallback?: boolean;
 }
 
 const WEAPON_CLASSES = [
@@ -307,6 +316,30 @@ export default function HunterSearchInterface() {
             <div className="text-sm leading-relaxed text-gray-200 whitespace-pre-wrap font-sans">
               {result.tacticalAdvice}
             </div>
+
+            {/* Google Search Grounding Sources / Wiki Citations */}
+            {result.sources && result.sources.length > 0 && (
+              <div className="pt-3 border-t border-slate-800/80 space-y-2">
+                <div className="flex items-center gap-1.5 text-xs text-amber-400/90 font-medium">
+                  <Globe className="w-3.5 h-3.5" />
+                  <span>Verified Live Wiki & Guide Citations:</span>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {result.sources.map((src, i) => (
+                    <a
+                      key={i}
+                      href={src.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-700/80 hover:border-amber-400 text-[11px] text-gray-300 hover:text-white transition-colors"
+                    >
+                      <span className="truncate max-w-xs">{src.title || src.url}</span>
+                      <ExternalLink className="w-3 h-3 text-gray-400 shrink-0" />
+                    </a>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Environmental Hazards Banner */}

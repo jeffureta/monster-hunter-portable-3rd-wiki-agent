@@ -3,11 +3,18 @@ import { solveQuestTactics, TacticalSolution } from './tactical-solver';
 import monstersData from '../data/monsters.json';
 import mapsData from '../data/maps.json';
 
+export interface GroundingSource {
+  title?: string;
+  url?: string;
+}
+
 export interface HunterAgentResponse {
   query: string;
   solverOutput: TacticalSolution;
   tacticalAdvice: string;
+  sources?: GroundingSource[];
   isCached?: boolean;
+  isOfflineFallback?: boolean;
 }
 
 // In-memory cache for ultra-fast, zero-token repeated questions
@@ -76,8 +83,8 @@ export async function consultHunterAgent(
 
   const keyToUse = apiKey || process.env.GEMINI_API_KEY;
 
-  // Fallback: If no API key is provided, return pure deterministic tactical briefing (0 tokens)
-  if (!keyToUse) {
+  // Helper to build deterministic fallback response
+  const buildOfflineResponse = (): HunterAgentResponse => {
     const bestElem = solverOutput.bestElements[0];
     const tacticalAdvice = [
       `### Tactical Briefing (Deterministic Offline Mode)`,
@@ -88,56 +95,92 @@ export async function consultHunterAgent(
       `- **Environmental Prep:** ${solverOutput.mapRequirements.mapName} — Hot Drink: ${solverOutput.mapRequirements.needsHotDrink ? 'YES' : 'NO'}, Cool Drink: ${solverOutput.mapRequirements.needsCoolDrink ? 'YES' : 'NO'}.`
     ].filter(Boolean).join('\n');
 
+    return {
+      query: userPrompt,
+      solverOutput,
+      tacticalAdvice,
+      sources: [],
+      isCached: false,
+      isOfflineFallback: true
+    };
+  };
+
+  // Fallback: If no API key is provided, return pure deterministic tactical briefing (0 tokens)
+  if (!keyToUse) {
+    const offlineResult = buildOfflineResponse();
+    responseCache.set(normalizedKey, offlineResult);
+    return offlineResult;
+  }
+
+  // Step 2: Use Gemini Flash with Google Search Grounding for specific weapon trees & skills
+  try {
+    const ai = new GoogleGenAI({ apiKey: keyToUse });
+    const compactContext = JSON.stringify({
+      game: "Monster Hunter Portable 3rd (PSP / English Patch)",
+      monsters: solverOutput.monsters.map(m => ({
+        name: m.name,
+        bestWeakness: m.bestPhysicalWeakness,
+        elementRank: m.elements,
+        specialNotes: (m as any).specialNotes
+      })),
+      bestElements: solverOutput.bestElements.slice(0, 3),
+      map: solverOutput.mapRequirements,
+      strategy: solverOutput.recommendedStrategy,
+      preferredWeapon: preferredWeapon || 'General'
+    });
+
+    const prompt = `You are an elite Monster Hunter Portable 3rd Guild Advisor. Answer the hunter's question using this verified MHP3rd game data and live search:
+${compactContext}
+
+Question: "${userPrompt}"
+${preferredWeapon ? `Hunter Main Weapon: "${preferredWeapon}" - Give specific MHP3rd craftable weapon trees, optimal armor skills (e.g. Load Up, Weakness Exploit, Sharpness +1), and combat tips.` : ''}
+
+Format rules:
+- Keep it concise, practical, and punchy (under 180 words).
+- Recommend specific MHP3rd weapon trees/endgame weapons (e.g., Akantor, Alatreon, Jinouga weapon lines) and key armor skills.
+- Ensure all weapons, skills, and mechanics exist in Monster Hunter Portable 3rd (do NOT mention World, Rise, or GU).
+- Mention essential map items (Hot/Cool drinks, traps).`;
+
+    const response = await ai.models.generateContent({
+      model: 'gemini-3.8-flash',
+      contents: prompt,
+      config: {
+        tools: [{ googleSearch: {} }]
+      }
+    });
+
+    const tacticalAdvice = response.text || solverOutput.recommendedStrategy;
+
+    // Extract web search grounding sources
+    const sources: GroundingSource[] = [];
+    const candidate = response.candidates?.[0];
+    const groundingChunks = (candidate as any)?.groundingMetadata?.groundingChunks;
+    if (Array.isArray(groundingChunks)) {
+      for (const chunk of groundingChunks) {
+        if (chunk.web?.uri) {
+          sources.push({
+            title: chunk.web.title || chunk.web.uri,
+            url: chunk.web.uri
+          });
+        }
+      }
+    }
+
     const result: HunterAgentResponse = {
       query: userPrompt,
       solverOutput,
       tacticalAdvice,
-      isCached: false
+      sources,
+      isCached: false,
+      isOfflineFallback: false
     };
+
     responseCache.set(normalizedKey, result);
     return result;
+  } catch (err) {
+    // Seamless fallback to deterministic solver on network error, invalid key, or quota limit
+    const fallbackResult = buildOfflineResponse();
+    responseCache.set(normalizedKey, fallbackResult);
+    return fallbackResult;
   }
-
-  // Step 2: Use Gemini Flash with minimal tokens
-  const ai = new GoogleGenAI({ apiKey: keyToUse });
-  const compactContext = JSON.stringify({
-    monsters: solverOutput.monsters.map(m => ({
-      name: m.name,
-      bestWeakness: m.bestPhysicalWeakness,
-      elementRank: m.elements,
-      specialNotes: (m as any).specialNotes
-    })),
-    bestElements: solverOutput.bestElements.slice(0, 3),
-    map: solverOutput.mapRequirements,
-    strategy: solverOutput.recommendedStrategy,
-    preferredWeapon: preferredWeapon || 'General'
-  });
-
-  const prompt = `You are a veteran Monster Hunter Portable 3rd Guild Advisor. Answer the hunter's question using this verified MHP3rd game data:
-${compactContext}
-
-Question: "${userPrompt}"
-${preferredWeapon ? `Hunter Main Weapon: "${preferredWeapon}" - Provide specific combat positioning and attack timing for this weapon class (e.g. Spirit Slash combos, charges, ammo types, or avoiding bouncing).` : ''}
-
-Format rules:
-- Keep it concise, practical, and punchy (under 180 words).
-- Mention the single best weapon element/raw choice, which body part to focus on, and any essential map items (Hot/Cool drinks, traps).
-- If multiple monsters are present, explain the cross-monster trade-off.`;
-
-  const response = await ai.models.generateContent({
-    model: 'gemini-3.8-flash',
-    contents: prompt
-  });
-
-  const tacticalAdvice = response.text || solverOutput.recommendedStrategy;
-
-  const result: HunterAgentResponse = {
-    query: userPrompt,
-    solverOutput,
-    tacticalAdvice,
-    isCached: false
-  };
-
-  responseCache.set(normalizedKey, result);
-  return result;
 }

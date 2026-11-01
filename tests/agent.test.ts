@@ -41,5 +41,19 @@ describe('Hunter Agent & Entity Parser (TDD)', () => {
     expect(result.solverOutput).toBeDefined();
     // Offline deterministic advice should feature the weapon class explicitly
     expect(result.tacticalAdvice).toContain('Long Sword');
+    expect(result.isOfflineFallback).toBe(true);
+  });
+
+  it('should support grounding sources structure and seamless fallback on API failures', async () => {
+    // Passing an invalid key will trigger the fallback gracefully without throwing
+    const result = await consultHunterAgent(
+      "What is the best bow against Rathian and Rathalos in Desert?",
+      { apiKey: "invalid_key_for_test", preferredWeapon: "Bow" }
+    );
+
+    expect(result.solverOutput).toBeDefined();
+    expect(result.tacticalAdvice).toBeDefined();
+    expect(result.isOfflineFallback).toBe(true);
+    expect(Array.isArray(result.sources)).toBe(true);
   });
 });
