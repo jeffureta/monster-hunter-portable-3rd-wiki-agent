@@ -8,6 +8,11 @@ export interface GroundingSource {
   url?: string;
 }
 
+export interface ChatMessage {
+  role: 'user' | 'assistant';
+  content: string;
+}
+
 export interface HunterAgentResponse {
   query: string;
   solverOutput: TacticalSolution;
@@ -54,12 +59,13 @@ export function parseQueryEntities(userPrompt: string): { monsters: string[]; ma
 export interface HunterAgentOptions {
   apiKey?: string;
   preferredWeapon?: string;
+  history?: ChatMessage[];
 }
 
 /**
  * Consults the MHP3rd Hunter Tactical Agent
  * 1. Solves the exact math deterministically (0 tokens)
- * 2. Uses Gemini Flash only to formulate crisp, tactical hunter advice
+ * 2. Uses Gemini Flash only to formulate crisp, tactical hunter advice with multi-turn support
  */
 export async function consultHunterAgent(
   userPrompt: string,
@@ -67,15 +73,22 @@ export async function consultHunterAgent(
 ): Promise<HunterAgentResponse> {
   const apiKey = typeof options === 'string' ? options : options?.apiKey;
   const preferredWeapon = typeof options === 'object' ? options.preferredWeapon : undefined;
+  const history = typeof options === 'object' ? options.history || [] : [];
 
-  const normalizedKey = `${userPrompt.trim().toLowerCase()}::${preferredWeapon || 'any'}`;
+  const historyKey = history.length > 0 ? `::hist_${history.length}` : '';
+  const normalizedKey = `${userPrompt.trim().toLowerCase()}::${preferredWeapon || 'any'}${historyKey}`;
   if (responseCache.has(normalizedKey)) {
     const cached = responseCache.get(normalizedKey)!;
     return { ...cached, isCached: true };
   }
 
   // Step 1: Deterministic entity parsing and tactical math (0 tokens)
-  const entities = parseQueryEntities(userPrompt);
+  // Include past user messages to extract context (e.g. which monster we are talking about)
+  const contextForEntities = [
+    ...history.filter(m => m.role === 'user').map(m => m.content),
+    userPrompt
+  ].join(' ');
+  const entities = parseQueryEntities(contextForEntities);
   const solverOutput = solveQuestTactics({
     monsters: entities.monsters.length > 0 ? entities.monsters : ['Zinogre'],
     map: entities.map
@@ -129,17 +142,23 @@ export async function consultHunterAgent(
       preferredWeapon: preferredWeapon || 'General'
     });
 
+    const conversationHistoryText = history.length > 0
+      ? `\nPrior conversation history:\n${history.map(h => `${h.role === 'user' ? 'Hunter' : 'Advisor'}: ${h.content}`).join('\n')}\n`
+      : '';
+
     const prompt = `You are an elite Monster Hunter Portable 3rd Guild Advisor. Answer the hunter's question using this verified MHP3rd game data and live search:
 ${compactContext}
-
-Question: "${userPrompt}"
+${conversationHistoryText}
+Current Question: "${userPrompt}"
 ${preferredWeapon ? `Hunter Main Weapon: "${preferredWeapon}" - Give specific MHP3rd craftable weapon trees, optimal armor skills (e.g. Load Up, Weakness Exploit, Sharpness +1), and combat tips.` : ''}
 
 Format rules:
-- Keep it concise, practical, and punchy (under 180 words).
+- Format as a clean, polished Guild Search Overview with clear sections, crisp bullet points, and highlight terms in bold.
+- Keep it concise, practical, and punchy (under 200 words).
 - Recommend specific MHP3rd weapon trees/endgame weapons (e.g., Akantor, Alatreon, Jinouga weapon lines) and key armor skills.
 - Ensure all weapons, skills, and mechanics exist in Monster Hunter Portable 3rd (do NOT mention World, Rise, or GU).
-- Mention essential map items (Hot/Cool drinks, traps).`;
+- Mention essential map items (Hot/Cool drinks, traps) if relevant.
+- Do NOT use robotic headers like "### Tactical Briefing (Deterministic Offline Mode)" or raw dump formats. Write directly to the hunter.`;
 
     const response = await ai.models.generateContent({
       model: 'gemini-3.8-flash',
