@@ -15,7 +15,13 @@ import {
   Droplets,
   Zap,
   Snowflake,
-  RotateCcw
+  RotateCcw,
+  CheckCircle2,
+  Loader2,
+  Cpu,
+  ChevronDown,
+  ChevronRight,
+  ArrowLeft
 } from 'lucide-react';
 
 interface GroundingSource {
@@ -23,11 +29,18 @@ interface GroundingSource {
   url?: string;
 }
 
+interface WorkflowStep {
+  title: string;
+  description: string;
+  status: 'complete' | 'running' | 'pending';
+}
+
 interface Message {
   id: string;
   role: 'user' | 'assistant';
   content: string;
   sources?: GroundingSource[];
+  workflowSteps?: WorkflowStep[];
   timestamp: number;
 }
 
@@ -60,10 +73,27 @@ export default function HunterSearchInterface() {
   const [initialQuery, setInitialQuery] = useState('');
   const [followUpQuery, setFollowUpQuery] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [activeWorkflowStage, setActiveWorkflowStage] = useState<number>(0);
   const [placeholder, setPlaceholder] = useState("What's the best electric bow-type weapon in MHP3rd?");
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const followUpInputRef = useRef<HTMLInputElement>(null);
+
+  // Workflow steps cycling during search
+  useEffect(() => {
+    let interval: NodeJS.Timeout | undefined;
+    if (isLoading) {
+      setActiveWorkflowStage(0);
+      interval = setInterval(() => {
+        setActiveWorkflowStage(prev => (prev < 2 ? prev + 1 : prev));
+      }, 700);
+    } else {
+      setActiveWorkflowStage(0);
+    }
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [isLoading]);
 
   // Initialize random dynamic placeholder and load persisted threads
   useEffect(() => {
@@ -188,6 +218,23 @@ export default function HunterSearchInterface() {
         role: 'assistant',
         content: data.tacticalAdvice || data.solverOutput?.recommendedStrategy || 'No tactical data found.',
         sources: data.sources || [],
+        workflowSteps: data.workflowSteps || [
+          {
+            title: 'Query Parsing & Target Extraction',
+            description: `Identified quest targets and combat context from query`,
+            status: 'complete'
+          },
+          {
+            title: 'Tactical Math & Weakness Engine',
+            description: `Calculated hitzone vulnerability and optimal elemental ratings`,
+            status: 'complete'
+          },
+          {
+            title: 'Google Grounded Guild Advisor',
+            description: `Synthesized MHP3rd database trees and combat recommendations`,
+            status: 'complete'
+          }
+        ],
         timestamp: Date.now()
       };
 
@@ -377,11 +424,18 @@ export default function HunterSearchInterface() {
             >
               {isSidebarOpen ? <PanelLeftClose className="w-5 h-5" /> : <PanelLeft className="w-5 h-5" />}
             </button>
-            <div className="flex items-center gap-2">
-              <span className="font-bold text-gray-100 text-base tracking-wide flex items-center gap-1.5">
+            <button
+              onClick={startNewSearch}
+              title="Return to Main Search Page"
+              className="group flex items-center gap-2 p-1.5 -ml-1 rounded-lg hover:bg-gray-800/60 transition-all text-left"
+            >
+              {activeThread && (
+                <ArrowLeft className="w-4 h-4 text-amber-400 group-hover:-translate-x-0.5 transition-transform" />
+              )}
+              <span className="font-bold text-gray-100 text-base tracking-wide flex items-center gap-1.5 group-hover:text-amber-200 transition-colors">
                 <span className="text-amber-400">Monster Hunter</span> P3rd Search
               </span>
-            </div>
+            </button>
           </div>
 
           {activeThread && (
@@ -498,6 +552,27 @@ export default function HunterSearchInterface() {
                       </span>
                     </div>
 
+                    {/* Background Workflow Execution Details */}
+                    {message.workflowSteps && message.workflowSteps.length > 0 && (
+                      <div className="bg-[#0b0d12]/70 rounded-xl border border-gray-800/70 p-3 space-y-2.5">
+                        <div className="flex items-center gap-2 text-xs font-semibold text-gray-300">
+                          <Cpu className="w-3.5 h-3.5 text-amber-400" />
+                          <span>Guild Engine Execution Trace</span>
+                        </div>
+                        <div className="space-y-2">
+                          {message.workflowSteps.map((step, idx) => (
+                            <div key={idx} className="flex items-start gap-2.5 text-xs">
+                              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0 mt-0.5" />
+                              <div className="flex-1">
+                                <span className="text-gray-200 font-medium">{step.title}</span>
+                                <p className="text-gray-400 text-[11px] mt-0.5">{step.description}</p>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
                     {/* Uniform Typography Content */}
                     <div className="pt-1">
                       {renderFormattedContent(message.content)}
@@ -529,18 +604,78 @@ export default function HunterSearchInterface() {
                 );
               })}
 
-              {/* Loading Indicator */}
+              {/* Live Background Workflow & Loading Indicator */}
               {isLoading && (
-                <div className="bg-[#121620] border border-gray-800/80 rounded-2xl p-5 shadow-sm space-y-3 animate-pulse">
-                  <div className="flex items-center gap-2">
-                    <Sparkles className="w-4 h-4 text-amber-400 animate-spin" />
-                    <span className="text-xs font-medium text-gray-400">
-                      Consulting Yukumo Hunter Guild archives & calculating tactical math...
+                <div className="bg-[#121620] border border-amber-500/30 rounded-2xl p-5 shadow-lg space-y-4">
+                  <div className="flex items-center justify-between pb-2 border-b border-gray-800/60">
+                    <div className="flex items-center gap-2">
+                      <Sparkles className="w-4 h-4 text-amber-400 animate-spin" />
+                      <span className="text-xs font-semibold text-amber-300 uppercase tracking-wide">
+                        Guild Workflow In Progress
+                      </span>
+                    </div>
+                    <span className="text-[11px] text-gray-400 font-mono">
+                      Running Pipeline...
                     </span>
                   </div>
-                  <div className="h-4 bg-gray-800/70 rounded w-3/4" />
-                  <div className="h-4 bg-gray-800/70 rounded w-5/6" />
-                  <div className="h-4 bg-gray-800/70 rounded w-2/3" />
+
+                  {/* Step-by-step background processing visualizer */}
+                  <div className="space-y-3 bg-[#0b0d12]/80 rounded-xl p-3.5 border border-gray-800/80">
+                    <div className="flex items-start gap-3">
+                      {activeWorkflowStage > 0 ? (
+                        <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+                      ) : (
+                        <Loader2 className="w-4 h-4 text-amber-400 animate-spin shrink-0 mt-0.5" />
+                      )}
+                      <div>
+                        <div className={`text-xs font-medium ${activeWorkflowStage >= 0 ? 'text-gray-200' : 'text-gray-400'}`}>
+                          1. Query Parsing & Target Entity Extraction
+                        </div>
+                        <div className="text-[11px] text-gray-400 mt-0.5">
+                          Identifying monster names, environment maps, and hunter weapon context...
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex items-start gap-3">
+                      {activeWorkflowStage > 1 ? (
+                        <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+                      ) : activeWorkflowStage === 1 ? (
+                        <Loader2 className="w-4 h-4 text-amber-400 animate-spin shrink-0 mt-0.5" />
+                      ) : (
+                        <div className="w-4 h-4 rounded-full border border-gray-700 shrink-0 mt-0.5" />
+                      )}
+                      <div>
+                        <div className={`text-xs font-medium ${activeWorkflowStage >= 1 ? 'text-gray-200' : 'text-gray-400'}`}>
+                          2. Deterministic Tactical Damage & Math Engine
+                        </div>
+                        <div className="text-[11px] text-gray-400 mt-0.5">
+                          Computing monster hitzone tables, cut/impact/shot formulas, and optimal elemental rank...
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex items-start gap-3">
+                      {activeWorkflowStage >= 2 ? (
+                        <Loader2 className="w-4 h-4 text-amber-400 animate-spin shrink-0 mt-0.5" />
+                      ) : (
+                        <div className="w-4 h-4 rounded-full border border-gray-700 shrink-0 mt-0.5" />
+                      )}
+                      <div>
+                        <div className={`text-xs font-medium ${activeWorkflowStage >= 2 ? 'text-gray-200' : 'text-gray-400'}`}>
+                          3. Grounded Synthesis & Endgame Tree Verification
+                        </div>
+                        <div className="text-[11px] text-gray-400 mt-0.5">
+                          Cross-referencing live MHP3rd database trees and formulating tactical briefing...
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="space-y-2 pt-1 animate-pulse">
+                    <div className="h-3.5 bg-gray-800/80 rounded w-3/4" />
+                    <div className="h-3.5 bg-gray-800/60 rounded w-5/6" />
+                  </div>
                 </div>
               )}
 

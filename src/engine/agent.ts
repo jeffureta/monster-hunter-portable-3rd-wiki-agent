@@ -20,6 +20,11 @@ export interface HunterAgentResponse {
   sources?: GroundingSource[];
   isCached?: boolean;
   isOfflineFallback?: boolean;
+  workflowSteps?: Array<{
+    title: string;
+    description: string;
+    status: 'complete' | 'running' | 'pending';
+  }>;
 }
 
 // In-memory cache for ultra-fast, zero-token repeated questions
@@ -108,13 +113,32 @@ export async function consultHunterAgent(
       `- **Environmental Prep:** ${solverOutput.mapRequirements.mapName} — Hot Drink: ${solverOutput.mapRequirements.needsHotDrink ? 'YES' : 'NO'}, Cool Drink: ${solverOutput.mapRequirements.needsCoolDrink ? 'YES' : 'NO'}.`
     ].filter(Boolean).join('\n');
 
+    const workflowSteps = [
+      {
+        title: 'Query Entity Parsing',
+        description: `Identified target(s): ${entities.monsters.length > 0 ? entities.monsters.join(', ') : 'Zinogre (fallback)'}${entities.map ? ` in ${entities.map}` : ''}`,
+        status: 'complete' as const
+      },
+      {
+        title: 'Deterministic Tactical Math Engine',
+        description: `Calculated elemental effectiveness matrix across 5 elements and physical hitzone thresholds`,
+        status: 'complete' as const
+      },
+      {
+        title: 'Offline Tactical Generator',
+        description: `Formulated instant zero-token guild briefing strategy`,
+        status: 'complete' as const
+      }
+    ];
+
     return {
       query: userPrompt,
       solverOutput,
       tacticalAdvice,
       sources: [],
       isCached: false,
-      isOfflineFallback: true
+      isOfflineFallback: true,
+      workflowSteps
     };
   };
 
@@ -185,13 +209,32 @@ Format rules:
       }
     }
 
+    const workflowSteps = [
+      {
+        title: 'Entity & Context Extraction',
+        description: `Parsed target: ${entities.monsters.length > 0 ? entities.monsters.join(', ') : 'Zinogre (default)'}${entities.map ? ` in ${entities.map}` : ''}${preferredWeapon ? ` (Weapon: ${preferredWeapon})` : ''}`,
+        status: 'complete' as const
+      },
+      {
+        title: 'Tactical Damage & Weakness Solver',
+        description: `Computed hitzone formulas and ranked optimal elements (${solverOutput.bestElements.slice(0, 2).map(e => `${e.element}: ${e.score}`).join(', ')})`,
+        status: 'complete' as const
+      },
+      {
+        title: 'Google Search Grounding & Synthesis',
+        description: `Cross-referenced MHP3rd database trees & grounded weapon trees via Gemini 3.8 Flash (${sources.length} sources referenced)`,
+        status: 'complete' as const
+      }
+    ];
+
     const result: HunterAgentResponse = {
       query: userPrompt,
       solverOutput,
       tacticalAdvice,
       sources,
       isCached: false,
-      isOfflineFallback: false
+      isOfflineFallback: false,
+      workflowSteps
     };
 
     responseCache.set(normalizedKey, result);
