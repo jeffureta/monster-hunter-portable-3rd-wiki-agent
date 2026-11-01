@@ -4,8 +4,8 @@
   "description": "Monster Hunter Portable 3rd Wiki & Tactical Advisor Agent",
   "type": "module",
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
+    "dev": "next dev --webpack",
+    "build": "next build --webpack",
     "start": "next start",
     "test": "vitest run",
     "test:watch": "vitest"
