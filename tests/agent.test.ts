@@ -31,4 +31,15 @@ describe('Hunter Agent & Entity Parser (TDD)', () => {
     expect(result.tacticalAdvice).toContain('Tactical Briefing');
     expect(result.solverOutput.mapRequirements.needsHotDrink).toBe(true);
   });
+
+  it('should accept hunter weapon preference in options and incorporate into tactical advice', async () => {
+    const result = await consultHunterAgent(
+      "Best weapon against Zinogre in Misty Peaks?",
+      { preferredWeapon: "Long Sword" }
+    );
+
+    expect(result.solverOutput).toBeDefined();
+    // Offline deterministic advice should feature the weapon class explicitly
+    expect(result.tacticalAdvice).toContain('Long Sword');
+  });
 });

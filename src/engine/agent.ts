@@ -44,13 +44,24 @@ export function parseQueryEntities(userPrompt: string): { monsters: string[]; ma
   return { monsters: foundMonsters, map: matchedMap };
 }
 
+export interface HunterAgentOptions {
+  apiKey?: string;
+  preferredWeapon?: string;
+}
+
 /**
  * Consults the MHP3rd Hunter Tactical Agent
  * 1. Solves the exact math deterministically (0 tokens)
  * 2. Uses Gemini Flash only to formulate crisp, tactical hunter advice
  */
-export async function consultHunterAgent(userPrompt: string, apiKey?: string): Promise<HunterAgentResponse> {
-  const normalizedKey = userPrompt.trim().toLowerCase();
+export async function consultHunterAgent(
+  userPrompt: string,
+  options?: string | HunterAgentOptions
+): Promise<HunterAgentResponse> {
+  const apiKey = typeof options === 'string' ? options : options?.apiKey;
+  const preferredWeapon = typeof options === 'object' ? options.preferredWeapon : undefined;
+
+  const normalizedKey = `${userPrompt.trim().toLowerCase()}::${preferredWeapon || 'any'}`;
   if (responseCache.has(normalizedKey)) {
     const cached = responseCache.get(normalizedKey)!;
     return { ...cached, isCached: true };
@@ -72,9 +83,10 @@ export async function consultHunterAgent(userPrompt: string, apiKey?: string): P
       `### Tactical Briefing (Deterministic Offline Mode)`,
       `- **Target Monsters:** ${solverOutput.monsters.map(m => m.name).join(', ')}`,
       `- **Recommended Element:** **${bestElem.element}** (Rating: ${bestElem.score} total)`,
+      preferredWeapon ? `- **Hunter Weapon Focus:** **${preferredWeapon}** (Tailored combat advice active)` : '',
       `- **Core Strategy:** ${solverOutput.recommendedStrategy}`,
       `- **Environmental Prep:** ${solverOutput.mapRequirements.mapName} — Hot Drink: ${solverOutput.mapRequirements.needsHotDrink ? 'YES' : 'NO'}, Cool Drink: ${solverOutput.mapRequirements.needsCoolDrink ? 'YES' : 'NO'}.`
-    ].join('\n');
+    ].filter(Boolean).join('\n');
 
     const result: HunterAgentResponse = {
       query: userPrompt,
@@ -97,13 +109,15 @@ export async function consultHunterAgent(userPrompt: string, apiKey?: string): P
     })),
     bestElements: solverOutput.bestElements.slice(0, 3),
     map: solverOutput.mapRequirements,
-    strategy: solverOutput.recommendedStrategy
+    strategy: solverOutput.recommendedStrategy,
+    preferredWeapon: preferredWeapon || 'General'
   });
 
   const prompt = `You are a veteran Monster Hunter Portable 3rd Guild Advisor. Answer the hunter's question using this verified MHP3rd game data:
 ${compactContext}
 
 Question: "${userPrompt}"
+${preferredWeapon ? `Hunter Main Weapon: "${preferredWeapon}" - Provide specific combat positioning and attack timing for this weapon class (e.g. Spirit Slash combos, charges, ammo types, or avoiding bouncing).` : ''}
 
 Format rules:
 - Keep it concise, practical, and punchy (under 180 words).
