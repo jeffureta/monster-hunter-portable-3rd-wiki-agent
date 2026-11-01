@@ -73,7 +73,7 @@ export default function HunterSearchInterface() {
   const { data: session, status } = useSession();
   const [threads, setThreads] = useState<Thread[]>([]);
   const [activeThreadId, setActiveThreadId] = useState<string | null>(null);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isSyncing, setIsSyncing] = useState(false);
   const [hasMigratedLocal, setHasMigratedLocal] = useState(false);
   
@@ -506,7 +506,7 @@ export default function HunterSearchInterface() {
                 <ArrowLeft className="w-4 h-4 text-amber-400 group-hover:-translate-x-0.5 transition-transform" />
               )}
               <span className="font-bold text-gray-100 text-base tracking-wide flex items-center gap-1.5 group-hover:text-amber-200 transition-colors">
-                <span className="text-amber-400">Monster Hunter</span> P3rd Search
+                <span className="text-amber-400">MHP 3rd</span> Wiki Agent
               </span>
             </button>
           </div>
@@ -587,7 +587,7 @@ export default function HunterSearchInterface() {
               {/* Clean Title */}
               <div className="space-y-2">
                 <h1 className="text-4xl sm:text-5xl font-black text-white tracking-tight">
-                  <span className="text-amber-400">Yukumo</span> Guild Search
+                  <span className="text-amber-400">Monster Hunter Portable 3rd</span> Wiki Agent
                 </h1>
               </div>
 

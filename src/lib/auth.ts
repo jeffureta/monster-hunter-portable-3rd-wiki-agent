@@ -1,5 +1,11 @@
 import { type NextAuthOptions } from 'next-auth';
-import GoogleProvider from 'next-auth/providers/google';
+import rawGoogleProvider from 'next-auth/providers/google';
+
+// Normalize ESM/CJS default export variations across bundlers/environments
+const GoogleProvider =
+  typeof rawGoogleProvider === 'function'
+    ? rawGoogleProvider
+    : (rawGoogleProvider as any).default;
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -24,3 +30,4 @@ export const authOptions: NextAuthOptions = {
   },
   secret: process.env.NEXTAUTH_SECRET || 'development-secret-mhp3rd-search-key',
 };
+
